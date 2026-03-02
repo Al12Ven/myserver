@@ -85,4 +85,32 @@
 // $k = array ('name' => 'Alisa', 'age'=> 30);
 // print(a3($k));
 
+
+
+class Pers{
+    public $name,  $age, $surname, $ves, $rost;
+    function __construct($name, $age, $surname, $ves, $rost)
+    {
+
+        $this->name=$name;
+        $this->age=$age;
+        $this->surname=$surname;
+        $this->ves=$ves;
+        $this->rost=$rost;
+
+    }
+        public function displayInfo()
+    {
+        echo "Name: $this->name<br> Age: $this->age<br> surname: $this->surname<br> Ves: $this->ves<br> rost: $this->rost ";
+        // print $this->name;
+     }
+   
+}
+
+$obj = new Pers("Yakov", 18, "Sadovskiy", 52, 161);
+$obj->displayInfo();
+// print_r($obj)
+// echo sumchisl;
+// var_dump($obj);
+
 ?>
