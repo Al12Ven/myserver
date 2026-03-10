@@ -245,7 +245,7 @@ class Human {
 }
 
 // Класс "Житель"
-class Hrestian extends Human {
+class Christian extends Human {
     public function __construct($name) {
         Human::__construct($name);
         echo $this->name . " - христианин.\n";
