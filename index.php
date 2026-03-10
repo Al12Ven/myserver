@@ -1,4 +1,5 @@
 <?php
+
 // session_start();
 // $param1 = $_GET["param1"];
 // $param2 = $_GET["param2"];
@@ -157,127 +158,393 @@
 
 
 
-// Разработать простую игру с персонажами:
-// 1.Простой житель
-// 2.Воин-защитник
-// 3.Лекарь
-
-// Суть игры имеется два селения , в них живут жители,некоторые из них лекари. И воины, которые защищают селение
-// Происходит нападение воинов одного селения на другое 
-// При этом происходит ранение жителей и воинов. Лекари в сражении не участвуют, но лечат воинов и жителей
-
-// Техническое задание на разработку
-// 1. Создать класс Людей
-// 2. Создать классы наследники - житель, воин, лекарь
-// 3. Создать по 1 объекту - жителя, воина, лекаря, для 2 селений
-// 4. Игра запускается в бесконечном цикле
-// 5. Выход из игры, победа одной из сторон
-// 6.Использовать случайные величины при разработке сценария игры
-// 7.Параметры жизни -100
-// 8.Урон воина - 10 при ударе другого воина
-// 9. Ленчния лекаря -5
-// 10. Урон жителя при ударе воина -15
-// 11. Житель не может бить
-// 12.Лекарь только лечит
-
-// Требования
-// 1. В классах должны быть конструкторы и диструкторы (диструкторы по необходимости)
-// 2. В классах должны быть методы и поля
-// 3. В родительском классе должны быть методы, которые должны быть использованы в наследниках
-// 4. В наследниках должны быть переопределенные методы
 
 
 
 
-//--------------------------------------------------------------------------------------------------------------------------------------
 
-// Краткое описание: Будет сражение между двумя поселениями Северянинами и Англичанами.
 
-//--------------------------------------------------------------------------------------------------------------------------------------
 
-// Класс "Человек" - базовый класс
-class Human {
-    protected $name;
-    protected $health;
-    protected $max_health = 100; // Жизнь по умолчанию 100%
 
-    // Конструктор
-    public function __construct($name) {
+
+
+
+
+/**
+ * Базовый класс Человека
+ */
+class Human
+{
+    protected string $name;
+    protected int $health = 100;
+    protected int $maxHealth = 100;
+    protected string $settlement;
+
+    public function __construct(string $name, string $settlement)
+    {
         $this->name = $name;
-        $this->health = $this->max_health;
-        echo $this->name . " присоединился к игре.\n";
+        $this->settlement = $settlement;
     }
 
-    // Метод атаки (будет переопределен)
-    public function attack($target) {
-        echo $this->name . " На данный момент ничего не происходит.\n";
+    public function __destruct()
+    {
+        // Деструктор для очистки ресурсов при необходимости
     }
 
-    // Метод получения урона
-    public function takeDamage($damage) {
-        $this->health -= $damage;
-        if ($this->health < 0) {
-            $this->health = 0;
-        }
-        echo $this->name . " получил " . $damage . " урона. Здоровье: " . $this->health . ".\n";
-        if ($this->health == 0) {
-            echo $this->name . " Убит!\n";
-        }
-    }
-
-    // Метод лечения (будет переопределен)
-    public function heal($target) {
-        echo $this->name . " не умеет лечить.\n";
-    }
-
-    // Геттеры (методы для получения значений полей)
-    public function getName() {
+    public function getName(): string
+    {
         return $this->name;
     }
 
-    public function getHealth() {
+    public function getHealth(): int
+    {
         return $this->health;
     }
 
-    public function isAlive() {
+    public function getSettlement(): string
+    {
+        return $this->settlement;
+    }
+
+    public function isAlive(): bool
+    {
         return $this->health > 0;
     }
-}
 
-// Класс "Житель"
-class Christian extends Human {
-    public function __construct($name) {
-        Human::__construct($name);
-        echo $this->name . " - христианин.\n";
+    public function takeDamage(int $damage): void
+    {
+        $this->health = max(0, $this->health - $damage);
     }
 
-    // Переопределяем метод атаки
-    public function attack($target) {
-        $damage = 15; // Урон жителя
-        echo $this->name . " в отчаянии пытается ударить " . $target->getName() . "!\n";
-        $target->takeDamage($damage);
-    }
-}
-
-// Класс "Воин"
-class Viking extends Human {
-    private $attack_damage = 10; // Урон воина
-
-    public function __construct($name) {
-        Human::__construct($name);
-        echo $this->name . " - Викинг.\n";
+    public function heal(int $amount): void
+    {
+        $this->health = min($this->maxHealth, $this->health + $amount);
     }
 
-    // Переопределяем метод атаки
-    public function attack($target) {
-        echo $this->name . " наносит удар " . $target->getName() . "!\n";
-        $target->takeDamage($this->attack_damage);
+    public function attack(Human $target): void
+    {
+        // Базовый метод атаки - переопределяется в наследниках
+    }
+
+    public function __toString(): string
+    {
+        return "{$this->name} ({$this->health}/{$this->maxHealth})";
     }
 }
 
+/**
+ * Класс Жителя
+ */
+class Resident extends Human
+{
+    public function __construct(string $name, string $settlement)
+    {
+        parent::__construct($name, $settlement);
+    }
 
+    public function attack(Human $target): void
+    {
+        // Житель не может бить
+        echo "  {$this->name} не умеет сражаться!\n";
+    }
+}
 
+/**
+ * Класс Воина
+ */
+class Warrior extends Human
+{
+    private int $damage = 10;
 
+    public function __construct(string $name, string $settlement)
+    {
+        parent::__construct($name, $settlement);
+    }
 
+    public function attack(Human $target): void
+    {
+        if (!$target->isAlive()) {
+            return;
+        }
 
-?>
+        // Урон зависит от типа цели
+        if ($target instanceof Resident) {
+            $actualDamage = 15; // Урон жителю
+        } else {
+            $actualDamage = $this->damage; // Урон воину
+        }
+
+        $target->takeDamage($actualDamage);
+        echo "  {$this->name} атакует {$target->getName()} и наносит {$actualDamage} урона!\n";
+    }
+}
+
+/**
+ * Класс Лекаря
+ */
+class Healer extends Human
+{
+    private int $healPower = 5;
+
+    public function __construct(string $name, string $settlement)
+    {
+        parent::__construct($name, $settlement);
+    }
+
+    public function attack(Human $target): void
+    {
+        // Лекарь не участвует в сражении
+        echo "  {$this->name} не участвует в бою!\n";
+    }
+
+    public function healTarget(Human $target): void
+    {
+        if (!$target->isAlive()) {
+            return;
+        }
+
+        $target->heal($this->healPower);
+        echo "  {$this->name} лечит {$target->getName()} на {$this->healPower} ед.\n";
+    }
+}
+
+/**
+ * Класс Поселения
+ */
+class Settlement
+{
+    private string $name;
+    private array $residents = [];
+    private array $warriors = [];
+    private array $healers = [];
+
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function __destruct()
+    {
+        // Очистка всех персонажей при уничтожении поселения
+        $this->residents = [];
+        $this->warriors = [];
+        $this->healers = [];
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function addResident(Resident $resident): void
+    {
+        $this->residents[] = $resident;
+    }
+
+    public function addWarrior(Warrior $warrior): void
+    {
+        $this->warriors[] = $warrior;
+    }
+
+    public function addHealer(Healer $healer): void
+    {
+        $this->healers[] = $healer;
+    }
+
+    public function getAliveWarriors(): array
+    {
+        return array_filter($this->warriors, fn($w) => $w->isAlive());
+    }
+
+    public function getAliveResidents(): array
+    {
+        return array_filter($this->residents, fn($r) => $r->isAlive());
+    }
+
+    public function getAliveHealers(): array
+    {
+        return array_filter($this->healers, fn($h) => $h->isAlive());
+    }
+
+    public function hasAliveUnits(): bool
+    {
+        return count($this->getAliveWarriors()) > 0 || 
+               count($this->getAliveResidents()) > 0;
+    }
+
+    public function getRandomAliveWarrior(): ?Warrior
+    {
+        $warriors = $this->getAliveWarriors();
+        if (empty($warriors)) {
+            return null;
+        }
+        return $warriors[array_rand($warriors)];
+    }
+
+    public function getRandomAliveResident(): ?Resident
+    {
+        $residents = $this->getAliveResidents();
+        if (empty($residents)) {
+            return null;
+        }
+        return $residents[array_rand($residents)];
+    }
+
+    public function getRandomAliveHealer(): ?Healer
+    {
+        $healers = $this->getAliveHealers();
+        if (empty($healers)) {
+            return null;
+        }
+        return $healers[array_rand($healers)];
+    }
+
+    public function getStats(): string
+    {
+        $warriors = count($this->getAliveWarriors());
+        $residents = count($this->getAliveResidents());
+        $healers = count($this->getAliveHealers());
+        return "{$this->name}: воинов={$warriors}, жителей={$residents}, лекарей={$healers}";
+    }
+}
+
+/**
+ * Класс Игры
+ */
+class Game
+{
+    private Settlement $settlement1;
+    private Settlement $settlement2;
+    private int $round = 0;
+    private int $maxRounds = 1000;
+
+    public function __construct(Settlement $s1, Settlement $s2)
+    {
+        $this->settlement1 = $s1;
+        $this->settlement2 = $s2;
+    }
+
+    public function __destruct()
+    {
+        // Деструктор игры
+    }
+
+    public function start(): void
+    {
+        echo "=== БИТВА НАЧАЛАСЬ! ===\n";
+        echo "{$this->settlement1->getName()} против {$this->settlement2->getName()}\n\n";
+
+        while ($this->round < $this->maxRounds) {
+            $this->round++;
+            echo "--- Раунд {$this->round} ---\n";
+
+            // Атака первого поселения на второе
+            $this->performAttack($this->settlement1, $this->settlement2);
+            
+            // Лечение в первом поселении
+            $this->performHealing($this->settlement1);
+            
+            // Атака второго поселения на первое
+            $this->performAttack($this->settlement2, $this->settlement1);
+            
+            // Лечение во втором поселении
+            $this->performHealing($this->settlement2);
+
+            echo "\nСтатус: {$this->settlement1->getStats()} | {$this->settlement2->getStats()}\n\n";
+
+            // Проверка победы
+            $winner = $this->checkWinner();
+            if ($winner !== null) {
+                echo "=== ИГРА ОКОНЧЕНА! ===\n";
+                echo "Победитель: {$winner->getName()}!\n";
+                break;
+            }
+
+            if ($this->round >= $this->maxRounds) {
+                echo "=== НИЧЬЯ! ===\n";
+                echo "Достигнут лимит раундов.\n";
+            }
+        }
+    }
+
+    private function performAttack(Settlement $attacker, Settlement $defender): void
+    {
+        $warrior = $attacker->getRandomAliveWarrior();
+        if ($warrior === null) {
+            return;
+        }
+
+        // Случайный выбор цели: воин или житель
+        $target = null;
+        $rand = rand(0, 1);
+        
+        if ($rand === 0) {
+            $target = $defender->getRandomAliveWarrior();
+        } else {
+            $target = $defender->getRandomAliveResident();
+        }
+
+        if ($target !== null) {
+            $warrior->attack($target);
+        }
+    }
+
+    private function performHealing(Settlement $settlement): void
+    {
+        $healer = $settlement->getRandomAliveHealer();
+        if ($healer === null) {
+            return;
+        }
+
+        // Лекарь лечит случайного раненого союзника
+        $target = null;
+        $rand = rand(0, 2);
+        
+        if ($rand === 0) {
+            $target = $settlement->getRandomAliveWarrior();
+        } elseif ($rand === 1) {
+            $target = $settlement->getRandomAliveResident();
+        } else {
+            // Можно лечить и другого лекаря
+            $target = $settlement->getRandomAliveHealer();
+        }
+
+        if ($target !== null && $target->getHealth() < $target->getHealth()) {
+            $healer->healTarget($target);
+        }
+    }
+
+    private function checkWinner(): ?Settlement
+    {
+        $s1Alive = $this->settlement1->hasAliveUnits();
+        $s2Alive = $this->settlement2->hasAliveUnits();
+
+        if (!$s2Alive && $s1Alive) {
+            return $this->settlement1;
+        }
+        if (!$s1Alive && $s2Alive) {
+            return $this->settlement2;
+        }
+        return null;
+    }
+}
+
+// ==================== ЗАПУСК ИГРЫ ====================
+
+// Создание поселений
+$vikings = new Settlement("Викинги");
+$english = new Settlement("Англичане");
+
+// Создание персонажей для Викингов
+$vikings->addWarrior(new Warrior("Рагнар", "Викинги"));
+$vikings->addResident(new Resident("Бьорн", "Викинги"));
+$vikings->addHealer(new Healer("Фрида", "Викинги"));
+
+// Создание персонажей для Англичан
+$english->addWarrior(new Warrior("Эдвард", "Англичане"));
+$english->addResident(new Resident("Томас", "Англичане"));
+$english->addHealer(new Healer("Мэри", "Англичане"));
+
+// Создание и запуск игры
+$game = new Game($vikings, $english);
+$game->start();
