@@ -87,30 +87,197 @@
 
 
 
-class Pers{
-    public $name,  $age, $surname, $ves, $rost;
-    function __construct($name, $age, $surname, $ves, $rost)
-    {
+// class Pers{
+//     public $name,  $age, $surname, $ves, $rost;
+//     function __construct($name, $age, $surname, $ves, $rost)
+//     {
 
-        $this->name=$name;
-        $this->age=$age;
-        $this->surname=$surname;
-        $this->ves=$ves;
-        $this->rost=$rost;
+//         $this->name=$name;
+//         $this->age=$age;
+//         $this->surname=$surname;
+//         $this->ves=$ves;
+//         $this->rost=$rost;
 
-    }
-        public function displayInfo()
-    {
-        echo "Name: $this->name<br> Age: $this->age<br> surname: $this->surname<br> Ves: $this->ves<br> rost: $this->rost ";
-        // print $this->name;
-     }
+//     }
+//         public function displayInfo()
+//     {
+//         echo "Name: $this->name<br> Age: $this->age<br> surname: $this->surname<br> Ves: $this->ves<br> rost: $this->rost ";
+//         // print $this->name;
+//      }
+//      public function(){
+        
+//      }
    
-}
+// }
 
-$obj = new Pers("Yakov", 18, "Sadovskiy", 52, 161);
-$obj->displayInfo();
+// $obj = new Pers("Yakov", 18, "Sadovskiy", 52, 161);
+// $obj->displayInfo();
 // print_r($obj)
 // echo sumchisl;
 // var_dump($obj);
+
+
+
+
+
+// class King
+// {//King
+//     public $name;
+//     function __construct($name)
+//     {
+//         $this->name=$name;
+//     }
+//     public function info()
+//     {
+//         echo "Name: $this->name";
+//     }
+
+// }//King
+
+// class Knight extends King
+// {//Knight
+    
+// }//Knight
+
+// $obj = new Knight("Ivar");
+// $obj->info();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Разработать простую игру с персонажами:
+// 1.Простой житель
+// 2.Воин-защитник
+// 3.Лекарь
+
+// Суть игры имеется два селения , в них живут жители,некоторые из них лекари. И воины, которые защищают селение
+// Происходит нападение воинов одного селения на другое 
+// При этом происходит ранение жителей и воинов. Лекари в сражении не участвуют, но лечат воинов и жителей
+
+// Техническое задание на разработку
+// 1. Создать класс Людей
+// 2. Создать классы наследники - житель, воин, лекарь
+// 3. Создать по 1 объекту - жителя, воина, лекаря, для 2 селений
+// 4. Игра запускается в бесконечном цикле
+// 5. Выход из игры, победа одной из сторон
+// 6.Использовать случайные величины при разработке сценария игры
+// 7.Параметры жизни -100
+// 8.Урон воина - 10 при ударе другого воина
+// 9. Ленчния лекаря -5
+// 10. Урон жителя при ударе воина -15
+// 11. Житель не может бить
+// 12.Лекарь только лечит
+
+// Требования
+// 1. В классах должны быть конструкторы и диструкторы (диструкторы по необходимости)
+// 2. В классах должны быть методы и поля
+// 3. В родительском классе должны быть методы, которые должны быть использованы в наследниках
+// 4. В наследниках должны быть переопределенные методы
+
+
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------
+
+// Краткое описание: Будет сражение между двумя поселениями Северянинами и Англичанами.
+
+//--------------------------------------------------------------------------------------------------------------------------------------
+
+// Класс "Человек" - базовый класс
+class Human {
+    protected $name;
+    protected $health;
+    protected $max_health = 100; // Жизнь по умолчанию 100%
+
+    // Конструктор
+    public function __construct($name) {
+        $this->name = $name;
+        $this->health = $this->max_health;
+        echo $this->name . " присоединился к игре.\n";
+    }
+
+    // Метод атаки (будет переопределен)
+    public function attack($target) {
+        echo $this->name . " На данный момент ничего не происходит.\n";
+    }
+
+    // Метод получения урона
+    public function takeDamage($damage) {
+        $this->health -= $damage;
+        if ($this->health < 0) {
+            $this->health = 0;
+        }
+        echo $this->name . " получил " . $damage . " урона. Здоровье: " . $this->health . ".\n";
+        if ($this->health == 0) {
+            echo $this->name . " Убит!\n";
+        }
+    }
+
+    // Метод лечения (будет переопределен)
+    public function heal($target) {
+        echo $this->name . " не умеет лечить.\n";
+    }
+
+    // Геттеры (методы для получения значений полей)
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getHealth() {
+        return $this->health;
+    }
+
+    public function isAlive() {
+        return $this->health > 0;
+    }
+}
+
+// Класс "Житель"
+class Hrestian extends Human {
+    public function __construct($name) {
+        Human::__construct($name);
+        echo $this->name . " - христианин.\n";
+    }
+
+    // Переопределяем метод атаки
+    public function attack($target) {
+        $damage = 15; // Урон жителя
+        echo $this->name . " в отчаянии пытается ударить " . $target->getName() . "!\n";
+        $target->takeDamage($damage);
+    }
+}
+
+// Класс "Воин"
+class Viking extends Human {
+    private $attack_damage = 10; // Урон воина
+
+    public function __construct($name) {
+        Human::__construct($name);
+        echo $this->name . " - Викинг.\n";
+    }
+
+    // Переопределяем метод атаки
+    public function attack($target) {
+        echo $this->name . " наносит удар " . $target->getName() . "!\n";
+        $target->takeDamage($this->attack_damage);
+    }
+}
+
+
+
+
+
 
 ?>
