@@ -173,378 +173,443 @@
 /**
  * Базовый класс Человека
  */
-class Human
-{
-    protected string $name;
-    protected int $health = 100;
-    protected int $maxHealth = 100;
-    protected string $settlement;
+// class Human
+// {
+//     protected string $name;
+//     protected int $health = 100;
+//     protected int $maxHealth = 100;
+//     protected string $settlement;
 
-    public function __construct(string $name, string $settlement)
-    {
-        $this->name = $name;
-        $this->settlement = $settlement;
-    }
+//     public function __construct(string $name, string $settlement)
+//     {
+//         $this->name = $name;
+//         $this->settlement = $settlement;
+//     }
 
-    public function __destruct()
-    {
-        // Деструктор для очистки ресурсов при необходимости
-    }
+//     public function __destruct()
+//     {
+//         // Деструктор для очистки ресурсов при необходимости
+//     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
+//     public function getName(): string
+//     {
+//         return $this->name;
+//     }
 
-    public function getHealth(): int
-    {
-        return $this->health;
-    }
+//     public function getHealth(): int
+//     {
+//         return $this->health;
+//     }
 
-    public function getSettlement(): string
-    {
-        return $this->settlement;
-    }
+//     public function getSettlement(): string
+//     {
+//         return $this->settlement;
+//     }
 
-    public function isAlive(): bool
-    {
-        return $this->health > 0;
-    }
+//     public function isAlive(): bool
+//     {
+//         return $this->health > 0;
+//     }
 
-    public function takeDamage(int $damage): void
-    {
-        $this->health = max(0, $this->health - $damage);
-    }
+//     public function takeDamage(int $damage): void
+//     {
+//         $this->health = max(0, $this->health - $damage);
+//     }
 
-    public function heal(int $amount): void
-    {
-        $this->health = min($this->maxHealth, $this->health + $amount);
-    }
+//     public function heal(int $amount): void
+//     {
+//         $this->health = min($this->maxHealth, $this->health + $amount);
+//     }
 
-    public function attack(Human $target): void
-    {
-        // Базовый метод атаки - переопределяется в наследниках
-    }
+//     public function attack(Human $target): void
+//     {
+//         // Базовый метод атаки - переопределяется в наследниках
+//     }
 
-    public function __toString(): string
-    {
-        return "{$this->name} ({$this->health}/{$this->maxHealth})";
-    }
-}
+//     public function __toString(): string
+//     {
+//         return "{$this->name} ({$this->health}/{$this->maxHealth})";
+//     }
+// }
 
-/**
- * Класс Жителя
- */
-class Resident extends Human
-{
-    public function __construct(string $name, string $settlement)
-    {
-        parent::__construct($name, $settlement);
-    }
+// /**
+//  * Класс Жителя
+//  */
+// class Resident extends Human
+// {
+//     public function __construct(string $name, string $settlement)
+//     {
+//         parent::__construct($name, $settlement);
+//     }
 
-    public function attack(Human $target): void
-    {
-        // Житель не может бить
-        echo "  {$this->name} не умеет сражаться!\n";
-    }
-}
+//     public function attack(Human $target): void
+//     {
+//         // Житель не может бить
+//         echo "  {$this->name} не умеет сражаться!\n";
+//     }
+// }
 
-/**
- * Класс Воина
- */
-class Warrior extends Human
-{
-    private int $damage = 10;
+// /**
+//  * Класс Воина
+//  */
+// class Warrior extends Human
+// {
+//     private int $damage = 10;
 
-    public function __construct(string $name, string $settlement)
-    {
-        parent::__construct($name, $settlement);
-    }
+//     public function __construct(string $name, string $settlement)
+//     {
+//         parent::__construct($name, $settlement);
+//     }
 
-    public function attack(Human $target): void
-    {
-        if (!$target->isAlive()) {
-            return;
-        }
+//     public function attack(Human $target): void
+//     {
+//         if (!$target->isAlive()) {
+//             return;
+//         }
 
-        // Урон зависит от типа цели
-        if ($target instanceof Resident) {
-            $actualDamage = 15; // Урон жителю
-        } else {
-            $actualDamage = $this->damage; // Урон воину
-        }
+//         // Урон зависит от типа цели
+//         if ($target instanceof Resident) {
+//             $actualDamage = 15; // Урон жителю
+//         } else {
+//             $actualDamage = $this->damage; // Урон воину
+//         }
 
-        $target->takeDamage($actualDamage);
-        echo "  {$this->name} атакует {$target->getName()} и наносит {$actualDamage} урона!\n";
-    }
-}
+//         $target->takeDamage($actualDamage);
+//         echo "  {$this->name} атакует {$target->getName()} и наносит {$actualDamage} урона!\n";
+//     }
+// }
 
-/**
- * Класс Лекаря
- */
-class Healer extends Human
-{
-    private int $healPower = 5;
+// /**
+//  * Класс Лекаря
+//  */
+// class Healer extends Human
+// {
+//     private int $healPower = 5;
 
-    public function __construct(string $name, string $settlement)
-    {
-        parent::__construct($name, $settlement);
-    }
+//     public function __construct(string $name, string $settlement)
+//     {
+//         parent::__construct($name, $settlement);
+//     }
 
-    public function attack(Human $target): void
-    {
-        // Лекарь не участвует в сражении
-        echo "  {$this->name} не участвует в бою!\n";
-    }
+//     public function attack(Human $target): void
+//     {
+//         // Лекарь не участвует в сражении
+//         echo "  {$this->name} не участвует в бою!\n";
+//     }
 
-    public function healTarget(Human $target): void
-    {
-        if (!$target->isAlive()) {
-            return;
-        }
+//     public function healTarget(Human $target): void
+//     {
+//         if (!$target->isAlive()) {
+//             return;
+//         }
 
-        $target->heal($this->healPower);
-        echo "  {$this->name} лечит {$target->getName()} на {$this->healPower} ед.\n";
-    }
-}
+//         $target->heal($this->healPower);
+//         echo "  {$this->name} лечит {$target->getName()} на {$this->healPower} ед.\n";
+//     }
+// }
 
-/**
- * Класс Поселения
- */
-class Settlement
-{
-    private string $name;
-    private array $residents = [];
-    private array $warriors = [];
-    private array $healers = [];
+// /**
+//  * Класс Поселения
+//  */
+// class Settlement
+// {
+//     private string $name;
+//     private array $residents = [];
+//     private array $warriors = [];
+//     private array $healers = [];
 
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
+//     public function __construct(string $name)
+//     {
+//         $this->name = $name;
+//     }
 
-    public function __destruct()
-    {
-        // Очистка всех персонажей при уничтожении поселения
-        $this->residents = [];
-        $this->warriors = [];
-        $this->healers = [];
-    }
+//     public function __destruct()
+//     {
+//         // Очистка всех персонажей при уничтожении поселения
+//         $this->residents = [];
+//         $this->warriors = [];
+//         $this->healers = [];
+//     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
+//     public function getName(): string
+//     {
+//         return $this->name;
+//     }
 
-    public function addResident(Resident $resident): void
-    {
-        $this->residents[] = $resident;
-    }
+//     public function addResident(Resident $resident): void
+//     {
+//         $this->residents[] = $resident;
+//     }
 
-    public function addWarrior(Warrior $warrior): void
-    {
-        $this->warriors[] = $warrior;
-    }
+//     public function addWarrior(Warrior $warrior): void
+//     {
+//         $this->warriors[] = $warrior;
+//     }
 
-    public function addHealer(Healer $healer): void
-    {
-        $this->healers[] = $healer;
-    }
+//     public function addHealer(Healer $healer): void
+//     {
+//         $this->healers[] = $healer;
+//     }
 
-    public function getAliveWarriors(): array
-    {
-        return array_filter($this->warriors, fn($w) => $w->isAlive());
-    }
+//     public function getAliveWarriors(): array
+//     {
+//         return array_filter($this->warriors, fn($w) => $w->isAlive());
+//     }
 
-    public function getAliveResidents(): array
-    {
-        return array_filter($this->residents, fn($r) => $r->isAlive());
-    }
+//     public function getAliveResidents(): array
+//     {
+//         return array_filter($this->residents, fn($r) => $r->isAlive());
+//     }
 
-    public function getAliveHealers(): array
-    {
-        return array_filter($this->healers, fn($h) => $h->isAlive());
-    }
+//     public function getAliveHealers(): array
+//     {
+//         return array_filter($this->healers, fn($h) => $h->isAlive());
+//     }
 
-    public function hasAliveUnits(): bool
-    {
-        return count($this->getAliveWarriors()) > 0 || 
-               count($this->getAliveResidents()) > 0;
-    }
+//     public function hasAliveUnits(): bool
+//     {
+//         return count($this->getAliveWarriors()) > 0 || 
+//                count($this->getAliveResidents()) > 0;
+//     }
 
-    public function getRandomAliveWarrior(): ?Warrior
-    {
-        $warriors = $this->getAliveWarriors();
-        if (empty($warriors)) {
-            return null;
-        }
-        return $warriors[array_rand($warriors)];
-    }
+//     public function getRandomAliveWarrior(): ?Warrior
+//     {
+//         $warriors = $this->getAliveWarriors();
+//         if (empty($warriors)) {
+//             return null;
+//         }
+//         return $warriors[array_rand($warriors)];
+//     }
 
-    public function getRandomAliveResident(): ?Resident
-    {
-        $residents = $this->getAliveResidents();
-        if (empty($residents)) {
-            return null;
-        }
-        return $residents[array_rand($residents)];
-    }
+//     public function getRandomAliveResident(): ?Resident
+//     {
+//         $residents = $this->getAliveResidents();
+//         if (empty($residents)) {
+//             return null;
+//         }
+//         return $residents[array_rand($residents)];
+//     }
 
-    public function getRandomAliveHealer(): ?Healer
-    {
-        $healers = $this->getAliveHealers();
-        if (empty($healers)) {
-            return null;
-        }
-        return $healers[array_rand($healers)];
-    }
+//     public function getRandomAliveHealer(): ?Healer
+//     {
+//         $healers = $this->getAliveHealers();
+//         if (empty($healers)) {
+//             return null;
+//         }
+//         return $healers[array_rand($healers)];
+//     }
 
-    public function getStats(): string
-    {
-        $warriors = count($this->getAliveWarriors());
-        $residents = count($this->getAliveResidents());
-        $healers = count($this->getAliveHealers());
-        return "{$this->name}: воинов={$warriors}, жителей={$residents}, лекарей={$healers}";
-    }
-}
+//     public function getStats(): string
+//     {
+//         $warriors = count($this->getAliveWarriors());
+//         $residents = count($this->getAliveResidents());
+//         $healers = count($this->getAliveHealers());
+//         return "{$this->name}: воинов={$warriors}, жителей={$residents}, лекарей={$healers}";
+//     }
+// }
 
-/**
- * Класс Игры
- */
-class Game
-{
-    private Settlement $settlement1;
-    private Settlement $settlement2;
-    private int $round = 0;
-    private int $maxRounds = 1000;
+// /**
+//  * Класс Игры
+//  */
+// class Game
+// {
+//     private Settlement $settlement1;
+//     private Settlement $settlement2;
+//     private int $round = 0;
+//     private int $maxRounds = 1000;
 
-    public function __construct(Settlement $s1, Settlement $s2)
-    {
-        $this->settlement1 = $s1;
-        $this->settlement2 = $s2;
-    }
+//     public function __construct(Settlement $s1, Settlement $s2)
+//     {
+//         $this->settlement1 = $s1;
+//         $this->settlement2 = $s2;
+//     }
 
-    public function __destruct()
-    {
-        // Деструктор игры
-    }
+//     public function __destruct()
+//     {
+//         // Деструктор игры
+//     }
 
-    public function start(): void
-    {
-        echo "=== БИТВА НАЧАЛАСЬ! ===\n";
-        echo "{$this->settlement1->getName()} против {$this->settlement2->getName()}\n\n";
+//     public function start(): void
+//     {
+//         echo "=== БИТВА НАЧАЛАСЬ! ===\n";
+//         echo "{$this->settlement1->getName()} против {$this->settlement2->getName()}\n\n";
 
-        while ($this->round < $this->maxRounds) {
-            $this->round++;
-            echo "--- Раунд {$this->round} ---\n";
+//         while ($this->round < $this->maxRounds) {
+//             $this->round++;
+//             echo "--- Раунд {$this->round} ---\n";
 
-            // Атака первого поселения на второе
-            $this->performAttack($this->settlement1, $this->settlement2);
+//             // Атака первого поселения на второе
+//             $this->performAttack($this->settlement1, $this->settlement2);
             
-            // Лечение в первом поселении
-            $this->performHealing($this->settlement1);
+//             // Лечение в первом поселении
+//             $this->performHealing($this->settlement1);
             
-            // Атака второго поселения на первое
-            $this->performAttack($this->settlement2, $this->settlement1);
+//             // Атака второго поселения на первое
+//             $this->performAttack($this->settlement2, $this->settlement1);
             
-            // Лечение во втором поселении
-            $this->performHealing($this->settlement2);
+//             // Лечение во втором поселении
+//             $this->performHealing($this->settlement2);
 
-            echo "\nСтатус: {$this->settlement1->getStats()} | {$this->settlement2->getStats()}\n\n";
+//             echo "\nСтатус: {$this->settlement1->getStats()} | {$this->settlement2->getStats()}\n\n";
 
-            // Проверка победы
-            $winner = $this->checkWinner();
-            if ($winner !== null) {
-                echo "=== ИГРА ОКОНЧЕНА! ===\n";
-                echo "Победитель: {$winner->getName()}!\n";
-                break;
-            }
+//             // Проверка победы
+//             $winner = $this->checkWinner();
+//             if ($winner !== null) {
+//                 echo "=== ИГРА ОКОНЧЕНА! ===\n";
+//                 echo "Победитель: {$winner->getName()}!\n";
+//                 break;
+//             }
 
-            if ($this->round >= $this->maxRounds) {
-                echo "=== НИЧЬЯ! ===\n";
-                echo "Достигнут лимит раундов.\n";
-            }
-        }
-    }
+//             if ($this->round >= $this->maxRounds) {
+//                 echo "=== НИЧЬЯ! ===\n";
+//                 echo "Достигнут лимит раундов.\n";
+//             }
+//         }
+//     }
 
-    private function performAttack(Settlement $attacker, Settlement $defender): void
-    {
-        $warrior = $attacker->getRandomAliveWarrior();
-        if ($warrior === null) {
-            return;
-        }
+//     private function performAttack(Settlement $attacker, Settlement $defender): void
+//     {
+//         $warrior = $attacker->getRandomAliveWarrior();
+//         if ($warrior === null) {
+//             return;
+//         }
 
-        // Случайный выбор цели: воин или житель
-        $target = null;
-        $rand = rand(0, 1);
+//         // Случайный выбор цели: воин или житель
+//         $target = null;
+//         $rand = rand(0, 1);
         
-        if ($rand === 0) {
-            $target = $defender->getRandomAliveWarrior();
-        } else {
-            $target = $defender->getRandomAliveResident();
-        }
+//         if ($rand === 0) {
+//             $target = $defender->getRandomAliveWarrior();
+//         } else {
+//             $target = $defender->getRandomAliveResident();
+//         }
 
-        if ($target !== null) {
-            $warrior->attack($target);
-        }
-    }
+//         if ($target !== null) {
+//             $warrior->attack($target);
+//         }
+//     }
 
-    private function performHealing(Settlement $settlement): void
-    {
-        $healer = $settlement->getRandomAliveHealer();
-        if ($healer === null) {
-            return;
-        }
+//     private function performHealing(Settlement $settlement): void
+//     {
+//         $healer = $settlement->getRandomAliveHealer();
+//         if ($healer === null) {
+//             return;
+//         }
 
-        // Лекарь лечит случайного раненого союзника
-        $target = null;
-        $rand = rand(0, 2);
+//         // Лекарь лечит случайного раненого союзника
+//         $target = null;
+//         $rand = rand(0, 2);
         
-        if ($rand === 0) {
-            $target = $settlement->getRandomAliveWarrior();
-        } elseif ($rand === 1) {
-            $target = $settlement->getRandomAliveResident();
-        } else {
-            // Можно лечить и другого лекаря
-            $target = $settlement->getRandomAliveHealer();
-        }
+//         if ($rand === 0) {
+//             $target = $settlement->getRandomAliveWarrior();
+//         } elseif ($rand === 1) {
+//             $target = $settlement->getRandomAliveResident();
+//         } else {
+//             // Можно лечить и другого лекаря
+//             $target = $settlement->getRandomAliveHealer();
+//         }
 
-        if ($target !== null && $target->getHealth() < $target->getHealth()) {
-            $healer->healTarget($target);
-        }
-    }
+//         if ($target !== null && $target->getHealth() < $target->getHealth()) {
+//             $healer->healTarget($target);
+//         }
+//     }
 
-    private function checkWinner(): ?Settlement
+//     private function checkWinner(): ?Settlement
+//     {
+//         $s1Alive = $this->settlement1->hasAliveUnits();
+//         $s2Alive = $this->settlement2->hasAliveUnits();
+
+//         if (!$s2Alive && $s1Alive) {
+//             return $this->settlement1;
+//         }
+//         if (!$s1Alive && $s2Alive) {
+//             return $this->settlement2;
+//         }
+//         return null;
+//     }
+// }
+
+// // ==================== ЗАПУСК ИГРЫ ====================
+
+// // Создание поселений
+// $vikings = new Settlement("Викинги");
+// $english = new Settlement("Англичане");
+
+// // Создание персонажей для Викингов
+// $vikings->addWarrior(new Warrior("Рагнар", "Викинги"));
+// $vikings->addResident(new Resident("Бьорн", "Викинги"));
+// $vikings->addHealer(new Healer("Фрида", "Викинги"));
+
+// // Создание персонажей для Англичан
+// $english->addWarrior(new Warrior("Эдвард", "Англичане"));
+// $english->addResident(new Resident("Томас", "Англичане"));
+// $english->addHealer(new Healer("Мэри", "Англичане"));
+
+// // Создание и запуск игры
+// $game = new Game($vikings, $english);
+// $game->start();
+
+
+
+try {
+    $host = '127.0.0.1';
+    $db = 'alr1';
+    $user = 'root';
+    $pass = '';
+    $charset = 'utf8';
+
+    $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+    $opt = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ];
+    // Получение объекта PDO
+    $pdo = new PDO($dsn, $user, $pass, $opt);
+    var_dump($pdo);
+    echo "<br/>";
+
+    // Получение данных из таблицы student по полю name
+    $stmt = $pdo->query('SELECT * FROM albums');
+    var_dump($stmt);
+    echo "<br/>";
+    while ($row = $stmt->fetch())
     {
-        $s1Alive = $this->settlement1->hasAliveUnits();
-        $s2Alive = $this->settlement2->hasAliveUnits();
-
-        if (!$s2Alive && $s1Alive) {
-            return $this->settlement1;
-        }
-        if (!$s1Alive && $s2Alive) {
-            return $this->settlement2;
-        }
-        return null;
+        echo $row['id']." ".$row['artist_id']." ".$row['title'];
+        echo "<br/>";
+        // printf("%d", $row['title']);
     }
+    // // Вставка данных
+    // $title = "Ложка";
+    // $month = "Март";
+    // $year = "2026";
+    // $cost = 100;
+    // $col = 5;
+
+
+    // $stmt = $pdo->prepare("INSERT INTO product (title, month,year,cost,col) VALUES (?, ?, ?, ?, ?)");
+    // $stmt->bindParam(1, $title);
+    // $stmt->bindParam(2, $month);
+    // $stmt->bindParam(3, $year);
+    // $stmt->bindParam(4, $cost);
+    // $stmt->bindParam(5, $col);
+    // $stmt->execute();
+
+    // ==================== ДОБАВЛЕНИЕ И УДАЛЕНИЕ (albums) ====================
+    
+    // Добавление нового альбома
+    // $artist_id = 1;
+    // $title = "CREAK";
+    // $stmt = $pdo->prepare("INSERT INTO albums (artist_id, title) VALUES (?, ?)");
+    // $stmt->execute([$artist_id, $title]);
+    // echo "Добавлен альбом с ID: " . $pdo->lastInsertId() . "<br/>";
+    
+    // Удаление альбома по ID
+    $deleteId = 8; // ID альбома для удаления
+    $stmt = $pdo->prepare("DELETE FROM albums WHERE id = ?");
+    $stmt->execute([$deleteId]);
+    echo "Удалено записей: " . $stmt->rowCount() . "<br/>";
+
+} catch (PDOException $e) {
+    die('Подключение не удалось: ' . $e->getMessage());
 }
-
-// ==================== ЗАПУСК ИГРЫ ====================
-
-// Создание поселений
-$vikings = new Settlement("Викинги");
-$english = new Settlement("Англичане");
-
-// Создание персонажей для Викингов
-$vikings->addWarrior(new Warrior("Рагнар", "Викинги"));
-$vikings->addResident(new Resident("Бьорн", "Викинги"));
-$vikings->addHealer(new Healer("Фрида", "Викинги"));
-
-// Создание персонажей для Англичан
-$english->addWarrior(new Warrior("Эдвард", "Англичане"));
-$english->addResident(new Resident("Томас", "Англичане"));
-$english->addHealer(new Healer("Мэри", "Англичане"));
-
-// Создание и запуск игры
-$game = new Game($vikings, $english);
-$game->start();
