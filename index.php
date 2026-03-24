@@ -314,39 +314,39 @@
 //18.03.26
 
 
-if($_GET !== null){
+// if($_GET !== null){
 
 
-        $host = '127.0.0.1';
-        $db = 'test1';
-        $user = 'root';
-        $pass = '';
-        $charset = 'utf8';
+//         $host = '127.0.0.1';
+//         $db = 'test1';
+//         $user = 'root';
+//         $pass = '';
+//         $charset = 'utf8';
 
-        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-        $opt = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ];
-        // Получение объекта PDO
-        $pdo = new PDO($dsn, $user, $pass, $opt);
+//         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+//         $opt = [
+//             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+//             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+//             PDO::ATTR_EMULATE_PREPARES => false,
+//         ];
+//         // Получение объекта PDO
+//         $pdo = new PDO($dsn, $user, $pass, $opt);
 
-    //$result = json_encode($_GET );
-    $name = htmlspecialchars($_GET['name']);
-    $fam = htmlspecialchars($_GET['fam']);
-    $ote = htmlspecialchars($_GET['ote']);
-    $year = htmlspecialchars($_GET['year']);
-    $pass = htmlspecialchars($_GET['pass']);
+//     //$result = json_encode($_GET );
+//     $name = htmlspecialchars($_GET['name']);
+//     $fam = htmlspecialchars($_GET['fam']);
+//     $ote = htmlspecialchars($_GET['ote']);
+//     $year = htmlspecialchars($_GET['year']);
+//     $pass = htmlspecialchars($_GET['pass']);
 
-    $stmt = $pdo->prepare("INSERT INTO student (name, fam, ote, year, pass) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bindParam(1, $name);
-    $stmt->bindParam(2, $fam);
-    $stmt->bindParam(3, $ote);
-    $stmt->bindParam(4, $year);
-    $stmt->bindParam(5, $pass);
-    $stmt->execute();
-}
+//     $stmt = $pdo->prepare("INSERT INTO student (name, fam, ote, year, pass) VALUES (?, ?, ?, ?, ?)");
+//     $stmt->bindParam(1, $name);
+//     $stmt->bindParam(2, $fam);
+//     $stmt->bindParam(3, $ote);
+//     $stmt->bindParam(4, $year);
+//     $stmt->bindParam(5, $pass);
+//     $stmt->execute();
+// }
 
 
 //конец
@@ -877,3 +877,37 @@ if($_GET !== null){
 
 
 
+if($_GET !== null){
+
+    try {
+        $host = '127.0.0.1';
+        $db = 'librery';
+        $user = 'root';
+        $pass = '';
+        $charset = 'utf8';
+
+        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+        $opt = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ];
+        // Получение объекта PDO
+        $pdo = new PDO($dsn, $user, $pass, $opt);
+
+        // Получение данных из таблицы student по полю name
+        $id = $_GET['id'];
+        $stmt = $pdo->prepare("SELECT name FROM product WHERE id=?");
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+
+    } catch (PDOException $e) {
+        die('Подключение не удалось: ' . $e->getMessage());
+    }
+
+    $results = $stmt->fetchAll();
+    $result = json_encode($results);
+    echo $result;
+}else{
+    return false;
+}
