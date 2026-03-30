@@ -910,12 +910,22 @@
 // }else{
 //     return false;
 // }
-echo "<pre>";
-print_r($_SERVER);
-echo "</pre>";
+// echo "<pre>";
+// print_r($_SERVER);
+// echo "</pre>";
 
-echo "=================================";
-echo "<br/>";
+// echo "=================================";
+// echo "<br/>";
 
-$url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' .$_SERVER['HTTP_HOST'] .$_SERVER['REQUEST_URI'];
-echo $url;
+// $url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' .$_SERVER['HTTP_HOST'] .$_SERVER['REQUEST_URI'];
+// echo $url;
+
+
+
+include_once "Route.php";
+
+$uri = explode('?', $_SERVER['REQUEST_URI']);
+$route = $uri[0];
+
+Route::getRoute($route);
+?>
